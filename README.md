@@ -27,7 +27,7 @@
 
 Проект распространяется под лицензией **MIT**. Подробности в файле [LICENSE](LICENSE).
 
-© 2025 NEW YEAR.exe Contributors
+© 2025 cipher
 
 
 ---
