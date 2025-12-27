@@ -1,0 +1,75 @@
+
+> year-recap@0.0.1 check
+> svelte-kit sync && svelte-check --tsconfig ./tsconfig.json
+
+Loading svelte-check in workspace: /mnt/diskp3/dev/year-recap
+Getting Svelte diagnostics...
+
+/mnt/diskp3/dev/year-recap/src/lib/components/CringeTree.svelte:2:18
+Error: Parameter 'msg' implicitly has an 'any' type. (js)
+<script>
+  function toast(msg) {
+    alert(msg); // Simple for now, can be upgraded to custom toast
+
+/mnt/diskp3/dev/year-recap/src/lib/components/SantaTerminal.svelte:66:73
+Error: Expected a valid element or component name. Components must have a valid variable name or dot notation expression
+https://svelte.dev/e/tag_invalid_name (svelte)
+          {:else}
+            <div class="text-[rgb(var(--cyan))] text-right">{msg.text} <</div>
+          {:/if}
+
+/mnt/diskp3/dev/year-recap/src/lib/components/SantaTerminal.svelte:66:73
+Error: Expected a valid element or component name. Components must have a valid variable name or dot notation expression
+https://svelte.dev/e/tag_invalid_name (ts)
+          {:else}
+            <div class="text-[rgb(var(--cyan))] text-right">{msg.text} <</div>
+          {:/if}
+
+/mnt/diskp3/dev/year-recap/src/lib/ui/Navbar.svelte:7:99
+Error: `$page` is an illegal variable name. To reference a global variable called `$page`, use `globalThis.$page`
+https://svelte.dev/e/global_reference_invalid (svelte)
+  <div class="flex gap-6 font-mono text-sm">
+    <a href="/" class="uppercase tracking-widest hover:text-[rgb(var(--cyan))] transition-colors {$page.url.pathname === '/' ? 'text-[rgb(var(--cyan))] text-shadow-glow' : 'text-slate-400'}">
+      [HOME]
+
+/mnt/diskp3/dev/year-recap/src/lib/ui/Navbar.svelte:7:99
+Error: Cannot find name '$page'. (js)
+  <div class="flex gap-6 font-mono text-sm">
+    <a href="/" class="uppercase tracking-widest hover:text-[rgb(var(--cyan))] transition-colors {$page.url.pathname === '/' ? 'text-[rgb(var(--cyan))] text-shadow-glow' : 'text-slate-400'}">
+      [HOME]
+
+/mnt/diskp3/dev/year-recap/src/lib/ui/SnowCanvas.svelte:3:22
+Error: Cannot find module '$lib/stores/ui' or its corresponding type declarations. (ts)
+  import { onMount, onDestroy } from 'svelte';
+  import { ui } from '$lib/stores/ui'; // Kept assuming user still has ui store, if not I'll remove. Wait, I deleted ui store earlier.
+  // I deleted ui store. I should not import it.
+
+/mnt/diskp3/dev/year-recap/src/routes/+page.svelte:6:10
+Error: Module '"/mnt/diskp3/dev/year-recap/src/lib/components/SantaTerminal.svelte"' has no default export. (js)
+  import MemeQuiz from '$lib/components/MemeQuiz.svelte';
+  import SantaTerminal from '$lib/components/SantaTerminal.svelte';
+  import Footer from '$lib/components/Footer.svelte';
+
+/mnt/diskp3/dev/year-recap/src/routes/contacts/+page.svelte:20:12
+Warn: '#' is not a valid href attribute
+https://svelte.dev/e/a11y_invalid_attribute (svelte)
+      <div class="flex gap-4 justify-center mt-6">
+        <a href="#" class="p-3 bg-white/10 rounded-full hover:bg-white/20 transition-colors">GitHub</a>
+        <a href="#" class="p-3 bg-white/10 rounded-full hover:bg-white/20 transition-colors">Twitter</a>
+
+/mnt/diskp3/dev/year-recap/src/routes/contacts/+page.svelte:21:12
+Warn: '#' is not a valid href attribute
+https://svelte.dev/e/a11y_invalid_attribute (svelte)
+        <a href="#" class="p-3 bg-white/10 rounded-full hover:bg-white/20 transition-colors">GitHub</a>
+        <a href="#" class="p-3 bg-white/10 rounded-full hover:bg-white/20 transition-colors">Twitter</a>
+        <a href="#" class="p-3 bg-white/10 rounded-full hover:bg-white/20 transition-colors">LinkedIn</a>
+
+/mnt/diskp3/dev/year-recap/src/routes/contacts/+page.svelte:22:12
+Warn: '#' is not a valid href attribute
+https://svelte.dev/e/a11y_invalid_attribute (svelte)
+        <a href="#" class="p-3 bg-white/10 rounded-full hover:bg-white/20 transition-colors">Twitter</a>
+        <a href="#" class="p-3 bg-white/10 rounded-full hover:bg-white/20 transition-colors">LinkedIn</a>
+      </div>
+
+====================================
+svelte-check found 7 errors and 3 warnings in 6 files

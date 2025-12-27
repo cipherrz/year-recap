@@ -1,0 +1,140 @@
+<script lang="ts">
+  import { afterUpdate } from 'svelte';
+  import { quizCompleted, quizResult, isEasterEgg } from '$lib/stores/quiz';
+
+  let messages = [
+    { from: 'sys', text: 'CONNECTION_ESTABLISHED...' },
+    { from: 'santa', text: '🎅 Дед Мороз (бот версия 0.1b) в сети. Че надо?' }
+  ];
+  let input = "";
+  let terminal: HTMLDivElement;
+  let usedWishes = new Set<number>();
+
+  afterUpdate(() => {
+    if (terminal) terminal.scrollTop = terminal.scrollHeight;
+  });
+
+  const santaReplies = [
+    "Принято. Обрабатывается... (никогда)",
+    "Уточни: ты хочешь это реально или как обычно?",
+    "Добавлено в список... в чёрный.",
+    "Хмм... а ты вел себя как душный тип?",
+    "Сервер перегружен оливье. Повторите позже.",
+    "Отправлено эльфам. Они ржут.",
+    "Могу предложить только носки."
+  ];
+
+  const wishTemplates = [
+    "Хочу, чтобы дедлайны горели, а не я",
+    "Хочу выспаться хотя бы раз в жизни",
+    "Хочу найти второй носок из пары",
+    "Хочу, чтобы Netflix добавил кнопку 'Я не сплю, продолжай'",
+    "Хочу разбогатеть до уровня 'могу позволить себе авокадо'",
+    "Хочу, чтобы кофе варился сам по утрам",
+    "Хочу телепорт до школы (или от школы)",
+    "Хочу, чтобы понедельник был отменён навсегда",
+    "Хочу супер-силу: всегда свежий айфон 100%",
+    "Хочу, чтобы Wi-Fi работал везде, даже в лифте",
+    "Хочу не терять ключи каждые 5 минут",
+    "Хочу, чтобы холодильник сам готовил ужин",
+    "Хочу машину времени (хотя бы на час вперёд)",
+    "Хочу бесконечный отпуск без потери зарплаты",
+    "Хочу кнопку 'отмена' для реальной жизни",
+    "Хочу, чтобы растения поливали сами себя",
+    "Хочу мотивацию делать то, что планирую",
+    "Хочу, чтобы уборка делалась сама",
+    "Хочу автопилот для скучных дел",
+    "Хочу, чтобы книги читались сами и пересказывали мне"
+  ];
+
+  function send() {
+    if (!input.trim()) return;
+    
+    const userText = input.trim().toLowerCase();
+    messages = [...messages, { from: 'user', text: input }];
+    
+    let reply = santaReplies[Math.floor(Math.random() * santaReplies.length)];
+    
+    // Easter Egg check
+    if (userText.includes('сертификат')) {
+      reply = "Лови, заслужил! (наверное)";
+      quizCompleted.set(true);
+      isEasterEgg.set(true);
+      quizResult.set('ПАСХАЛКА');
+    }
+    
+    setTimeout(() => {
+      messages = [...messages, { from: 'santa', text: reply }];
+    }, 600 + Math.random() * 1000);
+
+    input = "";
+  }
+
+  function genWish() {
+    // Get random wish with deduplication
+    let randomIndex: number;
+    let attempts = 0;
+    
+    do {
+      randomIndex = Math.floor(Math.random() * wishTemplates.length);
+      attempts++;
+      // Reset if all wishes used or too many attempts
+      if (usedWishes.size >= wishTemplates.length || attempts > 50) {
+        usedWishes.clear();
+      }
+    } while (usedWishes.has(randomIndex) && attempts < 100);
+    
+    usedWishes.add(randomIndex);
+    input = wishTemplates[randomIndex];
+    send();
+  }
+</script>
+
+<section class="max-w-2xl mx-auto py-20 px-4">
+  <div class="sys-card border sys-border-danger bg-black/80 font-mono text-sm">
+    <div class="flex justify-between items-center p-2 border-b sys-border-danger bg-[rgba(var(--danger),0.1)]">
+      <span class="text-[rgb(var(--danger))] font-bold ml-2">DED_MOROZ_DIRECT_UPLINK</span>
+      <div class="flex gap-1 mr-2">
+        <div class="w-2 h-2 rounded-full bg-[rgb(var(--danger))]"></div>
+        <div class="w-2 h-2 rounded-full bg-[rgb(var(--danger))]"></div>
+      </div>
+    </div>
+
+    <!-- Terminal Output -->
+    <div 
+      bind:this={terminal}
+      class="h-64 overflow-y-auto p-4 space-y-3"
+    >
+      {#each messages as msg}
+        <div class="opacity-100">
+          {#if msg.from === 'sys'}
+            <div class="text-[rgb(var(--text-log))] italic">> {msg.text}</div>
+          {:else if msg.from === 'santa'}
+            <div class="text-[rgb(var(--danger))] font-bold">DED_MOROZ_BOT: <span class="text-gray-300 font-normal">{msg.text}</span></div>
+          {:else}
+            <div class="text-[rgb(var(--cyan))] text-right">{msg.text} &lt;</div>
+          {/if}
+        </div>
+      {/each}
+    </div>
+
+    <!-- Input Area -->
+    <div class="p-4 border-t border-[rgba(255,45,85,0.3)] flex gap-2">
+      <span class="text-[rgb(var(--text-dim))]">></span>
+      <input 
+        bind:value={input}
+        on:keydown={(e) => { if (e.key === 'Enter') send(); }}
+        class="bg-transparent w-full outline-none text-[rgb(var(--text-main))]" 
+        placeholder="Напиши Деду..."
+      />
+      <button on:click={send} class="text-[rgb(var(--cyan))] hover:text-white uppercase text-xs">[SEND]</button>
+    </div>
+  </div>
+  
+  <div class="mt-4 text-center">
+    <button on:click={genWish} class="text-xs text-[rgb(var(--text-log))] hover:text-[rgb(var(--tangerine))] underline decoration-dashed pointer-cursor">
+      СГЕНЕРИРОВАТЬ ЖЕЛАНИЕ
+    </button>
+  </div>
+</section>
+

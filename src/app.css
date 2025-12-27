@@ -1,0 +1,212 @@
+@import "tailwindcss";
+
+:root {
+  /* Palette: Neon Error Holiday */
+  --bg: 7 10 18;        /* #070A12 */
+  --bg-card: 11 16 34;  /* #0B1022 */
+  --bg-hover: 16 26 52; /* #101A34 */
+
+  --primary: 124 77 255; /* #7C4DFF (Purple Neon) */
+  --cyan: 0 229 255;     /* #00E5FF (System Online) */
+  --danger: 255 45 85;   /* #FF2D55 (Error Red) */
+  --danger-dark: 176 0 32; /* #B00020 */
+  --tangerine: 255 159 28; /* #FF9F1C (Meme Accent) */
+
+  --text-main: 234 240 255; /* #EAF0FF */
+  --text-dim: 169 180 208;  /* #A9B4D0 */
+  --text-log: 110 122 168;  /* #6E7AA8 */
+  
+  --font-mono: 'Courier New', Courier, monospace; /* Terminal vibe */
+  --font-tech: 'Inter', system-ui, sans-serif;
+}
+
+html { scroll-behavior: smooth; }
+html, body { height: 100%; }
+
+body {
+  background-color: rgb(var(--bg));
+  color: rgb(var(--text-main));
+  font-family: var(--font-tech);
+  overflow-x: hidden;
+  transition: background-color 0.3s, color 0.3s;
+  /* Responsive font sizing */
+  font-size: 16px;
+}
+
+@media (max-width: 768px) {
+  body {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    font-size: 13px;
+  }
+}
+
+/* PANIC MODE */
+body.panic-mode {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+  font-family: 'Times New Roman', Times, serif !important;
+}
+body.panic-mode * {
+  border-color: #000000 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+  animation: none !important;
+  filter: none !important;
+}
+body.panic-mode .scanlines,
+body.panic-mode .vignette {
+  display: none !important;
+}
+
+/* Typography */
+h1, h2, h3, .font-mono { font-family: var(--font-mono); }
+a { text-decoration-thickness: 1px; text-underline-offset: 4px; }
+
+/* Custom Scrollbar */
+*::-webkit-scrollbar { width: 8px; }
+*::-webkit-scrollbar-track { background: transparent; }
+*::-webkit-scrollbar-thumb {
+  background: rgba(var(--primary), 0.3);
+  border: 1px solid rgba(var(--cyan), 0.2);
+  border-radius: 0; 
+}
+*::-webkit-scrollbar-thumb:hover { background: rgba(var(--primary), 0.6); }
+
+/* UI Primitives */
+.sys-card {
+  background-color: rgb(var(--bg-card));
+  border: 1px solid rgba(124, 77, 255, 0.25); /* Primary with opacity */
+  box-shadow: 0 0 15px rgba(124, 77, 255, 0.05);
+}
+
+.sys-border-cyan { border-color: rgba(var(--cyan), 0.5); }
+.sys-border-danger { border-color: rgba(var(--danger), 0.5); }
+
+/* Buttons */
+.btn-primary {
+  background: linear-gradient(90deg, rgba(var(--primary), 0.2), rgba(var(--cyan), 0.2));
+  border: 1px solid rgba(var(--primary), 0.5);
+  color: rgb(var(--cyan));
+  box-shadow: 0 0 10px rgba(124, 77, 255, 0.2);
+  transition: all 0.2s;
+  /* Touch-friendly minimum size */
+  min-height: 44px;
+  padding: 0.75rem 1.5rem;
+}
+.btn-primary:hover {
+  background: linear-gradient(90deg, rgba(var(--primary), 0.4), rgba(var(--cyan), 0.4));
+  box-shadow: 0 0 20px rgba(0, 229, 255, 0.4);
+  text-shadow: 0 0 5px rgb(var(--cyan));
+}
+
+.btn-danger {
+  background: rgba(var(--danger), 0.1);
+  border: 1px solid rgba(var(--danger), 0.5);
+  color: rgb(var(--danger));
+  min-height: 44px;
+  padding: 0.75rem 1.5rem;
+}
+.btn-danger:hover {
+  background: rgba(var(--danger), 0.2);
+  box-shadow: 0 0 10px rgba(var(--danger), 0.4);
+  animation: shake 0.5s infinite;
+}
+
+.btn-meme {
+  background: rgba(var(--tangerine), 0.1);
+  border: 1px solid rgba(var(--tangerine), 0.5);
+  color: rgb(var(--tangerine));
+  min-height: 44px;
+  padding: 0.75rem 1.5rem;
+}
+.btn-meme:hover {
+  background: rgba(var(--tangerine), 0.2);
+  transform: rotate(2deg);
+}
+
+/* Accessibility: Reduce motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Animations & Effects */
+@keyframes shake {
+  0% { transform: translate(1px, 1px) rotate(0deg); }
+  10% { transform: translate(-1px, -2px) rotate(-1deg); }
+  20% { transform: translate(-3px, 0px) rotate(1deg); }
+  30% { transform: translate(3px, 2px) rotate(0deg); }
+  40% { transform: translate(1px, -1px) rotate(1deg); }
+  50% { transform: translate(-1px, 2px) rotate(-1deg); }
+  60% { transform: translate(-3px, 1px) rotate(0deg); }
+  70% { transform: translate(3px, 1px) rotate(-1deg); }
+  80% { transform: translate(-1px, -1px) rotate(1deg); }
+  90% { transform: translate(1px, 2px) rotate(0deg); }
+  100% { transform: translate(1px, -2px) rotate(-1deg); }
+}
+
+.animate-glitch {
+  position: relative;
+}
+.animate-glitch::before, .animate-glitch::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+.animate-glitch::before {
+  left: 2px;
+  text-shadow: -1px 0 rgb(var(--danger));
+  clip: rect(24px, 550px, 90px, 0);
+  animation: glitch-anim-1 3s infinite linear alternate-reverse;
+}
+.animate-glitch::after {
+  left: -2px;
+  text-shadow: -1px 0 rgb(var(--cyan));
+  clip: rect(85px, 550px, 140px, 0);
+  animation: glitch-anim-2 2.5s infinite linear alternate-reverse;
+}
+
+@keyframes glitch-anim-1 {
+  0% { clip: rect(20px, 9999px, 10px, 0); }
+  100% { clip: rect(80px, 9999px, 100px, 0); }
+}
+@keyframes glitch-anim-2 {
+  0% { clip: rect(100px, 9999px, 80px, 0); }
+  100% { clip: rect(10px, 9999px, 50px, 0); }
+}
+
+.scanlines {
+  background: linear-gradient(
+    to bottom,
+    rgba(255,255,255,0),
+    rgba(255,255,255,0) 50%,
+    rgba(0,0,0,0.1) 50%,
+    rgba(0,0,0,0.1)
+  );
+  background-size: 100% 4px;
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 50;
+  opacity: 0.3;
+}
+
+.vignette {
+  background: radial-gradient(circle, transparent 50%, rgba(0,0,0,0.6) 100%);
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 49;
+}

@@ -1,0 +1,26 @@
+<script>
+  import { fade } from 'svelte/transition';
+</script>
+
+<div class="flex flex-col items-center justify-center min-h-[60vh] text-center" in:fade>
+  <h1 class="text-4xl md:text-6xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600 mb-8 animate-float">
+    Свяжитесь с нами
+  </h1>
+  
+  <div class="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-8 max-w-lg w-full shadow-2xl">
+    <p class="text-lg text-slate-300 mb-8">
+      Готовы начать новый проект в 2026? Давайте создадим что-то волшебное вместе.
+    </p>
+
+    <div class="space-y-4">
+      <a href="mailto:hello@example.com" class="block w-full py-3 px-6 rounded-lg bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold hover:opacity-90 transition-opacity">
+        Отправить Email
+      </a>
+      <div class="flex gap-4 justify-center mt-6">
+        <a href="https://github.com/" class="p-3 bg-white/10 rounded-full hover:bg-white/20 transition-colors">GitHub</a>
+        <a href="https://twitter.com/" class="p-3 bg-white/10 rounded-full hover:bg-white/20 transition-colors">Twitter</a>
+        <a href="https://linkedin.com/" class="p-3 bg-white/10 rounded-full hover:bg-white/20 transition-colors">LinkedIn</a>
+      </div>
+    </div>
+  </div>
+</div>
