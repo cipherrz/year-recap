@@ -6,6 +6,7 @@
   import PanicOverlay from '$lib/ui/PanicOverlay.svelte';
   import LoadingScreen from '$lib/ui/LoadingScreen.svelte';
   import { page } from '$app/stores';
+  import { base } from '$app/paths';
   import { fly } from 'svelte/transition';
   import { panicMode } from '$lib/stores/panic';
 </script>
@@ -20,22 +21,22 @@
   <meta name="keywords" content="новый год 2026, мемы, новогодний сайт, тест, дед мороз, сертификат, с новым годом" />
   
   <!-- Favicon -->
-  <link rel="icon" type="image/png" href="/favicon.png" />
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="icon" type="image/png" href="{base}/favicon.png" />
+  <link rel="icon" type="image/svg+xml" href="{base}/favicon.svg" />
   
   <!-- Open Graph / Facebook / VK -->
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://s1d3.ru/" />
   <meta property="og:title" content="NEW YEAR.exe — Запуск 2026" />
   <meta property="og:description" content="Попробуйте запустить Новый Год! Мемный новогодний сайт с глитчами." />
-  <meta property="og:image" content="/favicon.png" />
+  <meta property="og:image" content="{base}/favicon.png" />
   
   <!-- Twitter -->
   <meta property="twitter:card" content="summary_large_image" />
   <meta property="twitter:url" content="https://s1d3.ru/" />
   <meta property="twitter:title" content="NEW YEAR.exe — Запуск 2026" />
   <meta property="twitter:description" content="Попробуйте запустить Новый Год! Мемный новогодний сайт." />
-  <meta property="twitter:image" content="/favicon.png" />
+  <meta property="twitter:image" content="{base}/favicon.png" />
 </svelte:head>
 
 <div class="min-h-screen relative overflow-hidden transition-colors duration-200">

@@ -222,7 +222,7 @@
       <div class="text-sm font-mono text-[rgb(var(--text-dim))] mb-4 blur-sm">Подтверждает, что пользователь пережил 2025</div>
       
       <div class="mb-6 blur-sm">
-        <label class="block text-xs font-mono text-[rgb(var(--text-dim))] mb-2 text-left">ВВЕДИТЕ ВАШЕ ИМЯ:</label>
+        <span class="block text-xs font-mono text-[rgb(var(--text-dim))] mb-2 text-left">ВВЕДИТЕ ВАШЕ ИМЯ:</span>
         <div class="w-full px-4 py-3 bg-[rgb(var(--bg-card))] border sys-border-cyan"></div>
       </div>
       
