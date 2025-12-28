@@ -64,13 +64,6 @@
 			quizCompleted.set(true);
 			isEasterEgg.set(true);
 			quizResult.set('ПАСХАЛКА');
-		} else {
-			// Regular wish - send to backend
-			try {
-				await postWish(textToSend, 'Аноним');
-			} catch (e) {
-				console.error('Failed to post wish', e);
-			}
 		}
 
 		setTimeout(
@@ -149,13 +142,23 @@
 		</div>
 	</div>
 
-	<div class="mt-4 flex flex-col items-center gap-2">
-		<button
-			on:click={genWish}
-			class="pointer-cursor text-xs text-[rgb(var(--text-log))] underline decoration-dashed hover:text-[rgb(var(--tangerine))]"
-		>
-			СГЕНЕРИРОВАТЬ ЖЕЛАНИЕ
-		</button>
+	<div class="mt-4 flex flex-col items-center gap-3">
+		<div class="flex flex-wrap justify-center gap-4">
+			<button
+				on:click={genWish}
+				class="pointer-cursor text-xs text-[rgb(var(--text-log))] underline decoration-dashed hover:text-[rgb(var(--tangerine))]"
+			>
+				СГЕНЕРИРОВАТЬ ЖЕЛАНИЕ
+			</button>
+
+			<a
+				href="{base}/wishes"
+				class="sys-btn border-[rgb(var(--primary))] px-4 py-2 text-xs font-bold text-[rgb(var(--primary))] hover:bg-[rgb(var(--primary))]/10"
+			>
+				ЗАГАДАТЬ ЖЕЛАНИЕ (РЕАЛЬНО)
+			</a>
+		</div>
+
 		<a
 			href="{base}/wishes"
 			class="font-mono text-[10px] tracking-widest text-[rgb(var(--cyan))] uppercase opacity-40 transition-opacity hover:opacity-100"

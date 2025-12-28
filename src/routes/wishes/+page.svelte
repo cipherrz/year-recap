@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { base } from '$app/paths';
-	import { fetchWishes } from '$lib/utils/api';
-	import { fade, fly } from 'svelte/transition';
+	import { fetchWishes, postWish } from '$lib/utils/api';
+	import { fade, fly, slide } from 'svelte/transition';
 
 	interface Wish {
 		id: number;
@@ -14,15 +14,41 @@
 	let wishes: Wish[] = [];
 	let loading = true;
 	let error = '';
+	let showForm = false;
+	let newWishText = '';
+	let newWishNick = '';
+	let submitting = false;
+	let successMessage = '';
 
 	async function loadWishes() {
 		try {
-			const data = await fetchWishes(100);
+			const data = await fetchWishes(200);
 			wishes = data.items;
 			loading = false;
 		} catch (e: any) {
 			error = e.message;
 			loading = false;
+		}
+	}
+
+	async function submitWish() {
+		if (!newWishText.trim() || submitting) return;
+
+		submitting = true;
+		error = '';
+
+		try {
+			await postWish(newWishText, newWishNick || 'Аноним');
+			successMessage = 'ЖЕЛАНИЕ_ПРИНЯТО. ОНО_ПОЯВИТСЯ_В_ЛОГАХ_СЕЙЧАС.';
+			newWishText = '';
+			newWishNick = '';
+			showForm = false;
+			await loadWishes();
+			setTimeout(() => (successMessage = ''), 5000);
+		} catch (e: any) {
+			error = e.message;
+		} finally {
+			submitting = false;
 		}
 	}
 
@@ -39,18 +65,96 @@
 	onMount(loadWishes);
 </script>
 
-<div class="mx-auto max-w-4xl py-10">
-	<div class="mb-10 flex items-center gap-4">
-		<a
-			href="{base}/"
-			class="sys-btn px-4 py-2 font-mono text-xs opacity-60 transition-opacity hover:opacity-100"
+<div class="mx-auto max-w-4xl px-4 py-10">
+	<div class="mb-10 flex flex-col justify-between gap-6 md:flex-row md:items-center">
+		<div class="flex items-center gap-4">
+			<a
+				href="{base}/"
+				class="sys-btn px-4 py-2 font-mono text-xs opacity-60 transition-opacity hover:opacity-100"
+			>
+				[ НАЗАД ]
+			</a>
+			<h1 class="font-mono text-3xl font-bold tracking-tighter md:text-5xl">
+				WISH_DATABASE<span class="text-[rgb(var(--cyan))]">.log</span>
+			</h1>
+		</div>
+
+		<button
+			on:click={() => (showForm = !showForm)}
+			class="sys-btn border-[rgb(var(--primary))] px-6 py-3 text-sm font-bold text-[rgb(var(--primary))] hover:bg-[rgb(var(--primary))]/10"
 		>
-			[ НАЗАД ]
-		</a>
-		<h1 class="font-mono text-3xl font-bold tracking-tighter md:text-5xl">
-			WISH_DATABASE<span class="text-[rgb(var(--cyan))]">.log</span>
-		</h1>
+			[ ОСТАВИТЬ_СВОЙ_СЛЕД ]
+		</button>
 	</div>
+
+	{#if showForm}
+		<div
+			class="sys-card sys-border-primary mb-10 border bg-[rgba(var(--primary),0.05)] p-6"
+			transition:slide
+		>
+			<h3 class="mb-4 font-mono text-sm font-bold text-[rgb(var(--primary))] uppercase">
+				> СОЗДАНИЕ_ЗАПИСИ
+			</h3>
+
+			<div class="space-y-4">
+				<div>
+					<label
+						for="nickInput"
+						class="mb-1 block font-mono text-[10px] text-[rgb(var(--text-dim))] uppercase"
+						>НИКНЕЙМ (НЕОБЯЗАТЕЛЬНО):</label
+					>
+					<input
+						id="nickInput"
+						bind:value={newWishNick}
+						placeholder="Аноним"
+						maxlength="24"
+						class="w-full border border-white/10 bg-black/40 p-3 font-mono text-sm text-[rgb(var(--cyan))] outline-none focus:border-[rgb(var(--cyan))]"
+					/>
+				</div>
+
+				<div>
+					<label
+						for="textInput"
+						class="mb-1 block font-mono text-[10px] text-[rgb(var(--text-dim))] uppercase"
+						>ТЕКСТ_ЖЕЛАНИЯ:</label
+					>
+					<textarea
+						id="textInput"
+						bind:value={newWishText}
+						placeholder="То, что действительно важно..."
+						rows="3"
+						maxlength="200"
+						class="w-full border border-white/10 bg-black/40 p-3 font-mono text-sm text-white outline-none focus:border-[rgb(var(--primary))]"
+					></textarea>
+					<div class="mt-1 text-right font-mono text-[10px] text-[rgb(var(--text-dim))]">
+						{newWishText.length}/200
+					</div>
+				</div>
+
+				<div class="flex justify-end gap-3">
+					<button on:click={() => (showForm = false)} class="sys-btn px-4 py-2 text-xs opacity-60"
+						>ОТМЕНА</button
+					>
+					<button
+						on:click={submitWish}
+						disabled={!newWishText.trim() || submitting}
+						class="sys-btn bg-[rgb(var(--primary))] px-6 py-2 text-xs font-bold text-white disabled:opacity-30"
+					>
+						{submitting ? 'ОТПРАВКА...' : 'ЗАГРУЗИТЬ_В_ОБЛАКО'}
+					</button>
+				</div>
+			</div>
+		</div>
+	{/if}
+
+	{#if successMessage}
+		<div
+			class="sys-card mb-6 animate-pulse border border-[rgb(var(--primary))] p-4 text-center font-mono text-xs text-[rgb(var(--primary))]"
+			in:fade
+		>
+			> {successMessage}
+		</div>
+	{/if}
 
 	{#if loading}
 		<div class="sys-card p-12 text-center" in:fade>

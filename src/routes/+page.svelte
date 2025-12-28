@@ -303,4 +303,5 @@
 	</div>
 </div>
 
+<LiveStats />
 <Footer />
