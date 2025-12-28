@@ -1,13 +1,12 @@
-// See https://svelte.dev/docs/kit/types#app.d.ts
-// for information about these interfaces
+export { };
+
 declare global {
-	namespace App {
-		// interface Error {}
-		// interface Locals {}
-		// interface PageData {}
-		// interface PageState {}
-		// interface Platform {}
+	interface Window {
+		onloadTurnstileCallback: () => void;
+		turnstile: {
+			render: (container: string | HTMLElement, options: any) => string;
+			reset: (widgetId?: string) => void;
+			remove: (widgetId?: string) => void;
+		};
 	}
 }
-
-export {};

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
+	import { onMount, onDestroy } from 'svelte';
 	import { base } from '$app/paths';
 	import { fetchWishes, postWish } from '$lib/utils/api';
 	import { fade, fly, slide } from 'svelte/transition';
@@ -19,6 +19,8 @@
 	let newWishNick = '';
 	let submitting = false;
 	let successMessage = '';
+	let turnstileToken = '';
+	let turnstileWidgetId: string | null = null;
 
 	async function loadWishes() {
 		try {
@@ -31,22 +33,45 @@
 		}
 	}
 
+	function onTurnstileSuccess(token: string) {
+		turnstileToken = token;
+	}
+
+	function initTurnstile() {
+		if (window.turnstile && !turnstileWidgetId) {
+			turnstileWidgetId = window.turnstile.render('#turnstile-widget', {
+				sitekey: '0x4AAAAAACJcRwa7FvuTZgZU',
+				callback: onTurnstileSuccess,
+				theme: 'dark'
+			});
+		}
+	}
+
 	async function submitWish() {
-		if (!newWishText.trim() || submitting) return;
+		if (!newWishText.trim() || submitting || !turnstileToken) return;
 
 		submitting = true;
 		error = '';
 
 		try {
-			await postWish(newWishText, newWishNick || 'Аноним');
+			await postWish(newWishText, newWishNick || 'Аноним', turnstileToken);
 			successMessage = 'ЖЕЛАНИЕ_ПРИНЯТО. ОНО_ПОЯВИТСЯ_В_ЛОГАХ_СЕЙЧАС.';
 			newWishText = '';
 			newWishNick = '';
 			showForm = false;
+			turnstileToken = ''; // Reset token
+			if (window.turnstile && turnstileWidgetId) {
+				window.turnstile.reset(turnstileWidgetId);
+			}
 			await loadWishes();
 			setTimeout(() => (successMessage = ''), 5000);
 		} catch (e: any) {
 			error = e.message;
+			// Reset captcha on error too
+			if (window.turnstile && turnstileWidgetId) {
+				window.turnstile.reset(turnstileWidgetId);
+				turnstileToken = '';
+			}
 		} finally {
 			submitting = false;
 		}
@@ -62,7 +87,35 @@
 		});
 	}
 
-	onMount(loadWishes);
+	onMount(() => {
+		loadWishes();
+
+		// Set global callback
+		window.onloadTurnstileCallback = initTurnstile;
+
+		// Inject Turnstile script if not present
+		if (!document.querySelector('script[src*="turnstile/v0/api.js"]')) {
+			const script = document.createElement('script');
+			script.src =
+				'https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onloadTurnstileCallback';
+			script.async = true;
+			script.defer = true;
+			document.head.appendChild(script);
+		} else if (window.turnstile) {
+			// Already loaded, just init
+			initTurnstile();
+		}
+	});
+
+	onDestroy(() => {
+		if (window.turnstile && turnstileWidgetId) {
+			try {
+				window.turnstile.remove(turnstileWidgetId);
+			} catch (e) {
+				/* ignore */
+			}
+		}
+	});
 </script>
 
 <div class="mx-auto max-w-4xl px-4 py-10">
@@ -131,17 +184,21 @@
 					</div>
 				</div>
 
-				<div class="flex justify-end gap-3">
-					<button on:click={() => (showForm = false)} class="sys-btn px-4 py-2 text-xs opacity-60"
-						>ОТМЕНА</button
-					>
-					<button
-						on:click={submitWish}
-						disabled={!newWishText.trim() || submitting}
-						class="sys-btn bg-[rgb(var(--primary))] px-6 py-2 text-xs font-bold text-white disabled:opacity-30"
-					>
-						{submitting ? 'ОТПРАВКА...' : 'ЗАГРУЗИТЬ_В_ОБЛАКО'}
-					</button>
+				<div class="flex flex-col items-center gap-4">
+					<div id="turnstile-widget" class="cf-turnstile"></div>
+
+					<div class="flex w-full justify-end gap-3">
+						<button on:click={() => (showForm = false)} class="sys-btn px-4 py-2 text-xs opacity-60"
+							>ОТМЕНА</button
+						>
+						<button
+							on:click={submitWish}
+							disabled={!newWishText.trim() || submitting || !turnstileToken}
+							class="sys-btn bg-[rgb(var(--primary))] px-6 py-2 text-xs font-bold text-white disabled:opacity-30"
+						>
+							{submitting ? 'ОТПРАВКА...' : 'ЗАГРУЗИТЬ_В_ОБЛАКО'}
+						</button>
+					</div>
 				</div>
 			</div>
 		</div>

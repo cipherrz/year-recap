@@ -12,11 +12,11 @@ export async function fetchWishes(limit = 50) {
     return res.json();
 }
 
-export async function postWish(text: string, nick: string) {
+export async function postWish(text: string, nick: string, captchaToken: string) {
     const res = await fetch(`${API_BASE}/wishes`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text, nick })
+        body: JSON.stringify({ text, nick, captchaToken })
     });
     const data = await res.json();
     if (!res.ok) throw new Error(data.message || 'Failed to post wish');
