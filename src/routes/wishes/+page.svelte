@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { onMount, onDestroy } from 'svelte';
+	import { onMount, onDestroy, tick } from 'svelte';
 	import { base } from '$app/paths';
 	import { fetchWishes, postWish } from '$lib/utils/api';
 	import { fade, fly, slide } from 'svelte/transition';
@@ -37,13 +37,29 @@
 		turnstileToken = token;
 	}
 
-	function initTurnstile() {
-		if (window.turnstile && !turnstileWidgetId) {
-			turnstileWidgetId = window.turnstile.render('#turnstile-widget', {
+	async function initTurnstile() {
+		await tick(); // Wait for DOM to update if form was just shown
+		const container = document.getElementById('turnstile-widget');
+		if (window.turnstile && container && !turnstileWidgetId) {
+			turnstileWidgetId = window.turnstile.render(container, {
 				sitekey: '0x4AAAAAACJcRwa7FvuTZgZU',
 				callback: onTurnstileSuccess,
 				theme: 'dark'
 			});
+		}
+	}
+
+	async function toggleForm() {
+		showForm = !showForm;
+		if (showForm) {
+			initTurnstile();
+		} else {
+			// Cleanup when hidden
+			if (window.turnstile && turnstileWidgetId) {
+				window.turnstile.remove(turnstileWidgetId);
+				turnstileWidgetId = null;
+				turnstileToken = '';
+			}
 		}
 	}
 
@@ -133,7 +149,7 @@
 		</div>
 
 		<button
-			on:click={() => (showForm = !showForm)}
+			on:click={toggleForm}
 			class="sys-btn border-[rgb(var(--primary))] px-6 py-3 text-sm font-bold text-[rgb(var(--primary))] hover:bg-[rgb(var(--primary))]/10"
 		>
 			[ ОСТАВИТЬ_СВОЙ_СЛЕД ]
