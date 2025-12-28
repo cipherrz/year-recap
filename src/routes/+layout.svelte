@@ -8,7 +8,13 @@
   import { page } from '$app/stores';
   import { base } from '$app/paths';
   import { fly } from 'svelte/transition';
+  import { onMount } from 'svelte';
+  import { trackVisit } from '$lib/utils/api';
   import { panicMode } from '$lib/stores/panic';
+
+  onMount(() => {
+    trackVisit();
+  });
 </script>
 
 <svelte:head>
