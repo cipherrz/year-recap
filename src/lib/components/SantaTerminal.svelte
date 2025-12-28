@@ -142,28 +142,22 @@
 		</div>
 	</div>
 
-	<div class="mt-4 flex flex-col items-center gap-3">
-		<div class="flex flex-wrap justify-center gap-4">
-			<button
-				on:click={genWish}
-				class="pointer-cursor text-xs text-[rgb(var(--text-log))] underline decoration-dashed hover:text-[rgb(var(--tangerine))]"
-			>
-				СГЕНЕРИРОВАТЬ ЖЕЛАНИЕ
-			</button>
-
-			<a
-				href="{base}/wishes"
-				class="sys-btn border-[rgb(var(--primary))] px-4 py-2 text-xs font-bold text-[rgb(var(--primary))] hover:bg-[rgb(var(--primary))]/10"
-			>
-				ЗАГАДАТЬ ЖЕЛАНИЕ (РЕАЛЬНО)
-			</a>
-		</div>
-
+	<div class="mt-8 flex flex-col items-center gap-6">
 		<a
 			href="{base}/wishes"
-			class="font-mono text-[10px] tracking-widest text-[rgb(var(--cyan))] uppercase opacity-40 transition-opacity hover:opacity-100"
+			class="sys-btn group relative overflow-hidden border-2 border-[rgb(var(--primary))] bg-[rgb(var(--primary))]/10 px-10 py-5 text-xl font-black tracking-tighter text-[rgb(var(--primary))] shadow-[0_0_20px_rgba(124,77,255,0.2)] transition-all hover:scale-105 hover:bg-[rgb(var(--primary))] hover:text-white hover:shadow-[0_0_40px_rgba(124,77,255,0.5)]"
 		>
-			[ ОТКРЫТЬ_БАЗУ_ЖЕЛАНИЙ_ПОЛЬЗОВАТЕЛЕЙ ]
+			<span class="relative z-10">ЗАГАДАТЬ ЖЕЛАНИЕ (РЕАЛЬНО)</span>
+			<div
+				class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-500 group-hover:translate-x-full"
+			></div>
 		</a>
+
+		<button
+			on:click={genWish}
+			class="pointer-cursor font-mono text-[10px] tracking-widest text-[rgb(var(--text-log))] uppercase underline decoration-dashed opacity-50 transition-opacity hover:opacity-100"
+		>
+			[ СГЕНЕРИРОВАТЬ МЕМНЫЙ ВАРИАНТ ДЛЯ ЧАТА ]
+		</button>
 	</div>
 </section>
